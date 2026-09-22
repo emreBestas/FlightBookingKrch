@@ -1,11 +1,12 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace FlightBookingKrch.Entities
 {
     public class Flight
     {
         [BsonId]
-        [BsonRepresentation(MongoDB.Bson.ObjectId)]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string FlightId { get; set; } // ObjectId
         public string FlightNumber { get; set; } // TK123, PC2023
         public string AirlineCode { get; set; } // TK, PC, LH

@@ -30,5 +30,20 @@ namespace FlightBookingKrch.Areas.Admin.Controllers
             await _flightService.CreateFlightAsync(createFlightDto);
             return RedirectToAction("FlightList");
         }
+        public async Task<IActionResult>FlightDetail(string id)
+        {
+            var flight = await _flightService.GetFlightByIdAsync(id);
+            var passengers = await _flightService.GetPassengersDetailsWithPassengers(id);
+            ViewBag.FlightNumber = flight?.FlightNumber?? "-";
+            ViewBag.AirlineCode = flight?.AirlineCode ?? "-";
+            ViewBag.DepartureAirportCode = flight?.DepartureAirportCode ?? "-";
+            ViewBag.ArrivalAirportCode = flight?.ArrivalAirportCode ?? "-";
+            ViewBag.DepartureTime = flight?.DepartureTime;
+            ViewBag.ArrivalTime = flight?.ArrivalTime;
+            ViewBag.Status = flight?.Status ?? "-";
+            ViewBag.TotalSeats = flight?.TotalSeats ?? 0;
+
+            return View(passengers);
+        } 
     }   
 }

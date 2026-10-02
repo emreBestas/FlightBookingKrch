@@ -1,4 +1,5 @@
 ﻿using FlightBookingKrch.Dtos.FlightDtos;
+using FlightBookingKrch.Dtos.PassengerDtos;
 
 namespace FlightBookingKrch.Services.FlightServices
 {
@@ -8,5 +9,6 @@ namespace FlightBookingKrch.Services.FlightServices
         Task<GetFlightByIdDto> GetFlightByIdAsync(string id);
         Task CreateFlightAsync(CreateFlightDto createFlightDto);
         Task DeleteFlightAsync(string id);
+        Task<List<PassengerListItemDto>> GetPassengersDetailsWithPassengers(string id);
     }
 }

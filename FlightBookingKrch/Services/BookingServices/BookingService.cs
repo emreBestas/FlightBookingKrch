@@ -16,28 +16,24 @@ namespace FlightBookingKrch.Services.BookingServices
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
-            _bookingCollection = database.GetCollection<Booking>("Bookings");
+            _bookingCollection = database.GetCollection<Booking>(settings.BookingCollectionName);
             _flightCollection = database.GetCollection<Flight>(settings.FlightCollectionName);
         }
 
         public async Task CreateBookingAsync(CreateBookingDto dto)
         {
-            // 🔥 1. Flight çek
             var flight = await _flightCollection
                 .Find(x => x.FlightId == dto.FlightId)
                 .FirstOrDefaultAsync();
 
-            if (flight == null)
-                throw new Exception("Uçuş bulunamadı");
+            //if (flight == null)
+            //    throw new Exception("Uçuş bulunamadı");
 
-            // 🔥 2. Yolcu sayısı
             var passengerCount = dto.Passengers.Count;
 
-            // 🔥 3. Koltuk kontrol
-            if (flight.AvailableSeats < passengerCount)
-                throw new Exception("Yeterli koltuk yok");
+            //if (flight.AvailableSeats < passengerCount)
+            //    throw new Exception("Yeterli koltuk yok");
 
-            // 🔥 4. Passenger mapping
             var passengers = dto.Passengers.Select(x => new Passenger
             {
                 Name = x.Name,
@@ -47,10 +43,8 @@ namespace FlightBookingKrch.Services.BookingServices
                 PassengerType = x.PassengerType
             }).ToList();
 
-            // 🔥 5. Fiyat hesaplama
             var totalPrice = passengerCount * flight.BasePrice;
 
-            // 🔥 6. Booking oluştur
             var booking = new Booking
             {
                 FlightId = dto.FlightId,
@@ -64,17 +58,15 @@ namespace FlightBookingKrch.Services.BookingServices
                 BookingDate = DateTime.Now,
                 Status = "Confirmed"
             };
-
             await _bookingCollection.InsertOneAsync(booking);
 
-            // 🔥 7. Koltuk düş
-            var update = Builders<Flight>.Update
-                .Inc(x => x.AvailableSeats, -passengerCount);
+            //var update = Builders<Flight>.Update
+            //    .Inc(x => x.AvailableSeats, -passengerCount);
 
-            await _flightCollection.UpdateOneAsync(
-                x => x.FlightId == dto.FlightId,
-                update
-            );
+            //await _flightCollection.UpdateOneAsync(
+            //    x => x.FlightId == dto.FlightId,
+            //    update
+            //);
         }
     }
 }

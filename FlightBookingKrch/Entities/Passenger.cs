@@ -21,5 +21,6 @@
         public string? BoardingPassNumber { get; set; }
         public string? Gate { get; set; }
         public DateTime? BoardingTime { get; set; }
+
     }
 }

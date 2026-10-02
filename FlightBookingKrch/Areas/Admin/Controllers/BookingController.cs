@@ -1,4 +1,6 @@
-﻿using FlightBookingKrch.Services.FlightServices;
+﻿using FlightBookingKrch.Dtos.BookingDtos;
+using FlightBookingKrch.Services.BookingServices;
+using FlightBookingKrch.Services.FlightServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightBookingKrch.Areas.Admin.Controllers
@@ -7,15 +9,18 @@ namespace FlightBookingKrch.Areas.Admin.Controllers
     public class BookingController : Controller
     {
        private readonly IFlightService _flightService;
+        private readonly IBookingService _bookingService;
 
-        public BookingController(IFlightService flightService)
+        public BookingController(IFlightService flightService, IBookingService bookingService)
         {
             _flightService = flightService;
+            _bookingService = bookingService;
         }
-
+        [HttpGet]
         public async Task<IActionResult> CreateBooking(string id)
         {
             var value = await _flightService.GetFlightByIdAsync(id);
+            ViewBag.id = id;    
             ViewBag.FlightNumber = value.FlightNumber;
             ViewBag.DepartureAirportCode = value.DepartureAirportCode;
             ViewBag.DepartureAirportName = value.DepartureAirportName;
@@ -25,6 +30,12 @@ namespace FlightBookingKrch.Areas.Admin.Controllers
             ViewBag.ArrivalTime = value.ArrivalTime;
             ViewBag.AirlineCode = value.AirlineCode;
             return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateBooking(CreateBookingDto createBookingDto)
+        {
+            await _bookingService.CreateBookingAsync(createBookingDto);
+            return RedirectToAction("Index","Booking",new {area = "Admin"});
         }
         public IActionResult BookingList()
         {

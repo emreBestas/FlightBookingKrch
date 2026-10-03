@@ -43,6 +43,11 @@ namespace FlightBookingKrch.Areas.Admin.Controllers
             ViewBag.Status = flight?.Status ?? "-";
             ViewBag.TotalSeats = flight?.TotalSeats ?? 0;
 
+
+            TempData["FlightNumber"] = flight.FlightNumber;
+            TempData["DepartureTime"] = flight.DepartureTime;
+            TempData["ArrivalTime"] = flight.ArrivalTime;
+
             return View(passengers);
         } 
     }   

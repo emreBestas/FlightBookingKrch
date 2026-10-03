@@ -1,13 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FlightBookingKrch.Dtos.CheckInDtos;
+using FlightBookingKrch.Services.BookingServices;
+using FlightBookingKrch.Services.CheckInServices;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FlightBookingKrch.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class CheckInController : Controller
     {
-        public IActionResult Index()
+        private readonly IBookingService _bookingService;
+        private readonly ICheckInService _checkInService;
+        public CheckInController(IBookingService bookingService, ICheckInService checkInService)
         {
+            _bookingService = bookingService;
+            _checkInService = checkInService;
+        }
+
+        public async Task<IActionResult> Index(string id)
+        {
+            ViewBag.FlightNumber =TempData["FlightNumber"];
+            ViewBag.DepartureTime = TempData["DepartureTime"];
+            ViewBag.ArrivalTime = TempData["ArrivalTime"];
+
+            var passenger = await _bookingService.GetPassengerNameByIdAsync(id);
+            var pnrNumber = await _bookingService.GetPnrByPassengerIdAsync(id);
+            var gate = await _bookingService.GetGateByPassengerIdAsync(id);
+            ViewBag.Name = passenger.Name;
+            ViewBag.Surname = passenger.Surname;
+            ViewBag.PnrNumber = pnrNumber;
+            ViewBag.Gate = gate;
             return View();
         }
-    }
+        [HttpPost]
+        public async Task<IActionResult> Index(CompleteCheckInDto completeCheckInDto)
+        {
+            await _checkInService.CompleteCheckInAsync(completeCheckInDto);
+            return RedirectToAction("Index");
+        }
 }

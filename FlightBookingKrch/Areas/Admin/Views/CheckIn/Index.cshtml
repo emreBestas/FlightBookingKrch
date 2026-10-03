@@ -1566,7 +1566,7 @@
                         </div>
                         <div class="ci-route-mid">
                             <div class="ci-route-line"><i class="bi bi-airplane-fill"></i></div>
-                            <div class="ci-route-dur" id="bannerDur">— dk</div>
+                            <div class="ci-route-dur" id="bannerDur">@((int)(((DateTime)ViewBag.ArrivalTime - (DateTime)ViewBag.DepartureTime).TotalMinutes)) dk</div>
                         </div>
                         <div style="text-align:center;">
                             <div class="ci-apt-code">@ViewBag.ArrivalAirportCode</div>
@@ -1598,15 +1598,15 @@
                     </div>
                     <div class="ci-meta-item">
                         <span class="ci-meta-key">Yolcu</span>
-                        <span class="ci-meta-val">@ViewBag.PassengerName</span>
+                        <span class="ci-meta-val">@ViewBag.Name @ViewBag.Surname</span>
                     </div>
                     <div class="ci-meta-item">
                         <span class="ci-meta-key">PNR</span>
-                        <span class="ci-meta-val" style="font-family:monospace;letter-spacing:.8px;">@ViewBag.Pnr</span>
+                        <span class="ci-meta-val" style="font-family:monospace;letter-spacing:.8px;">@ViewBag.PnrNumber</span>
                     </div>
                     <div class="ci-meta-item">
                         <span class="ci-meta-key">Kapı</span>
-                        <span class="ci-meta-val">@(ViewBag.Gate ?? "—")</span>
+                        <span class="ci-meta-val">@ViewBag.Gate </span>
                     </div>
                 </div>
             </div>

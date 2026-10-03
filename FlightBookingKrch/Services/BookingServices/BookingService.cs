@@ -44,6 +44,7 @@ namespace FlightBookingKrch.Services.BookingServices
             }).ToList();
 
             var totalPrice = passengerCount * flight.BasePrice;
+            var pnr = await GenerateUniquePnrAsync();
 
             var booking = new Booking
             {
@@ -56,8 +57,12 @@ namespace FlightBookingKrch.Services.BookingServices
 
                 TotalPrice = totalPrice,
                 BookingDate = DateTime.Now,
-                Status = "Confirmed"
+                Status = "Confirmed",
+                PnrNumber = pnr
             };
+
+           
+
             await _bookingCollection.InsertOneAsync(booking);
 
             //var update = Builders<Flight>.Update
@@ -67,6 +72,70 @@ namespace FlightBookingKrch.Services.BookingServices
             //    x => x.FlightId == dto.FlightId,
             //    update
             //);
+
+
+        }
+
+        public async Task<string> GetGateByPassengerIdAsync(string passengerId)
+        {
+            var booking = await _bookingCollection.Find(x => x.Passengers.Any(p => p.PassengerId == passengerId)).FirstOrDefaultAsync();
+
+            if (booking == null)
+                return null;
+
+            var passenger = booking.Passengers.FirstOrDefault(p => p.PassengerId == passengerId);
+
+            if (passenger == null)
+                return null;
+
+            return passenger.Gate;
+        }
+
+        public async Task<(string Name, string Surname)> GetPassengerNameByIdAsync(string passengerId)
+        {
+            var booking = await _bookingCollection.Find(x => x.Passengers.Any(p => p.PassengerId == passengerId)).FirstOrDefaultAsync();
+
+            if (booking == null)
+                return (null, null);
+
+            var passenger = booking.Passengers.FirstOrDefault(p => p.PassengerId == passengerId);
+
+            if (passenger == null)
+                return (null, null);
+
+            return (passenger.Name, passenger.Surname);
+        }
+
+        public async Task<string> GetPnrByPassengerIdAsync(string passengerId)
+        {
+            var booking = await _bookingCollection.Find(x => x.Passengers.Any(p => p.PassengerId == passengerId)).FirstOrDefaultAsync();
+
+            if (booking == null)
+                return null;
+
+            return booking.PnrNumber;
+        }
+
+        private async Task<string> GenerateUniquePnrAsync()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+
+            string pnr;
+            bool exists;
+
+            do
+            {
+                pnr = new string(Enumerable.Repeat(chars, 6)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
+
+                exists = await _bookingCollection
+                    .Find(x => x.PnrNumber == pnr)
+                    .AnyAsync();
+
+            } while (exists);
+
+            return pnr;
         }
     }
 }

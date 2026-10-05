@@ -1,6 +1,7 @@
 using FlightBookingKrch.Services.BookingServices;
 using FlightBookingKrch.Services.CheckInServices;
 using FlightBookingKrch.Services.FlightServices;
+using FlightBookingKrch.Services.MachineLearningServices;
 using FlightBookingKrch.Settings;
 using Microsoft.Extensions.Options;
 using System.Reflection;
@@ -10,6 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<ICheckInService, CheckInService>();
+
+builder.Services.AddSingleton<FlightMlService>();
+builder.Services.AddScoped<MongoFlightDataService>();
+
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettingsKey"));

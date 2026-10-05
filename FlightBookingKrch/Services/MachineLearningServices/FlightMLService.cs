@@ -3,7 +3,7 @@ using Microsoft.ML;
 
 namespace FlightBookingKrch.Services.MachineLearningServices
 {
-    public class FlightMLService
+    public class FlightMlService
     {
         private readonly MLContext _context;
         private ITransformer _model;

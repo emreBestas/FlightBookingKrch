@@ -67,3 +67,4 @@ namespace FlightBookingKrch.Services.CheckInServices
             await _checkInCollection.InsertOneAsync(checkIn);
         }
     }
+}
